@@ -1,0 +1,90 @@
+{
+  "Original": {
+    "Suspects": [
+      ["Rev. Green", "Green"],
+      ["Prof. Plum", "Plum"],
+      ["Col. Mustard", "Mustard"],
+      ["Mrs. Peacock", "Peacock"],
+      ["Miss. Scarlet", "Scarlet"],
+      ["Mrs. White", "White"]
+    ],
+    "Weapons": [
+      ["CandleStick", "Stick"],
+      ["Dagger", "Dagger"],
+      ["Lead Pipe", "Pipe"],
+      ["Revolver", "Gun"],
+      ["Rope", "Rope"],
+      ["Spanner", "Spanner"]
+    ],
+    "Rooms":
+    [
+      ["Conservatory", "Cons."],
+      ["Lounge", "Lounge"],
+      ["Kitchen", "Kitchen"],
+      ["Library", "Library"],
+      ["Hall", "Hall"],
+      ["Study", "Study"],
+      ["Ball Room", "Ball"],
+      ["Dining Room", "Dining"],
+      ["Billiard Room", "Billiard"]
+    ]
+  },
+  "The Simpsons": {
+    "Suspects": [
+      ["Krusty the Clown", "Krusty"],
+      ["Bart Simpson", "Bart"],
+      ["Homer Simpson", "Homer"],
+      ["Marge Simpson", "Marge"],
+      ["Lisa Simpson", "Lisa"],
+      ["Waylon Smithers", "Waylon"]
+    ],
+    "Weapons": [
+      ["Poisoned Doughnut", "Nut"],
+      ["Extend-o-Glove", "Glove"],
+      ["Necklace", "Necklace"],
+      ["Slingshot", "Shot"],
+      ["Plutonium Rod", "Rod"],
+      ["Saxophone", "Sax"]
+    ],
+    "Rooms": [
+      ["Barney's Bowl-a-Rama", "Barney's"],
+      ["Krustylu Studios", "Krustylu"],
+      ["Nuclear Power Plant", "Plant"],
+      ["The Simpsons House", "House"],
+      ["The Frying Dutchman", "Dutchman"],
+      ["Kwik-e-Mart", "Mart"],
+      ["Burns Manor", "Manor"],
+      ["Springfield Retirement Castle", "Castle"],
+      ["The Android's Dungeon", "Dungeon"]
+    ]
+  },
+  "Harry Potter": {
+    "Suspects": [
+      ["Ferir Greyback", "Greyback"],
+      ["Lucius Malfoy", "Lucius"],
+      ["Peter Pettigrew", "Peter"],
+      ["Draco Malfoy", "Draco"],
+      ["Snatcher", "Snatcher"],
+      ["Bellatrix Lestrange", "Bellatrix"]
+    ],
+    "Weapons": [
+      ["Jinxed Broomstick", "Broomstick"],
+      ["Cursed Necklace", "Necklace"],
+      ["Love Potion", "Potion"],
+      ["Poisoned Mead", "Mead"],
+      ["Incendio", "Incendio"],
+      ["Stupify", "Stupify"]
+    ],
+    "Rooms": [
+      ["Malfoy Manor", "Manor"],
+      ["The Hog's Head", "Hog's Head"],
+      ["The Shrieking Shack", "Shack"],
+      ["Hogwarts Castle", "Castle"],
+      ["Forbidden Forest", "Forest"],
+      ["Gringotts", "Gringotts"],
+      ["Weasley's Wizard Wheezes", "Weasley's"],
+      ["Ministry of Magic", "Ministry"],
+      ["12 Grimmauld Place", "Grimmauld"]
+    ]
+  }
+}
