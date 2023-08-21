@@ -1,4 +1,4 @@
-package ie.stephen.cluedo_mobile_app;
+package ie.stephen.cluedo_mobile;
 
 import io.flutter.embedding.android.FlutterActivity;
 

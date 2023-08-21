@@ -1,72 +1,84 @@
+import "../utils/progress_report.dart";
+import "../utils/contradiction.dart";
+import "../utils/pair.dart";
 
-import "globals.dart";
+import "global.dart";
 import "player.dart";
 
-
-enum Conviction
-{
+enum Conviction {
   unknown,
   innocent,
   guilty
 }
 
-
-class _Stage
-{
+class CardStage {
   Player? owner;
-  Set<Player> possibleOwners = { };
+  Set<Player> possibleOwners;
 
-  _Stage(this.possibleOwners);
+  CardStage(List<Player> possibleOwners) : possibleOwners = possibleOwners.toSet();
+  CardStage.clone(CardStage s) : owner = s.owner, possibleOwners = Set.from(s.possibleOwners);
 }
-
 
 class Card {
   final String name, nickname;
   final Category category;
 
-  List<_Stage> stages = [];
   Conviction conviction = Conviction.unknown;
+  List<CardStage> stages = [CardStage(gPlayers)];
 
   Card(this.name, this.nickname, this.category);
 
-  bool ownerKnown(final int stageIndex) { return stages[stageIndex].owner == null; }
-  bool locationKnown(final int stageIndex) { return ownerKnown(stageIndex) || conviction == Conviction.guilty; }
-  bool couldBelongTo(final Player player, final int stageIndex) { return stages[stageIndex].possibleOwners.contains(player); }
-  bool ownedBy(final Player player, final int stageIndex) { return stages[stageIndex].owner == player; }
+  bool isGuilty() => conviction == Conviction.guilty;
+
+  bool isOwnerKnown(final int stageIndex) => stages[stageIndex].owner == null;
+
+  bool isOwnedBy(final Player player, final int stageIndex) => stages[stageIndex].owner == player;
+
+  bool isLocationKnown(final int stageIndex) => isOwnerKnown(stageIndex) || isGuilty();
+
+  bool couldBeOwnedBy(final Player player, final int stageIndex) => stages[stageIndex].possibleOwners.contains(player);
+
+  void reset() {
+    stages = [ CardStage(gPlayers)];
+    conviction = Conviction.unknown;
+  }
 
   void processInnocent() {
     switch (conviction) {
       case Conviction.guilty:
-        throw Contradiction("Deduced that " + name + " is innocent but this card is already guilty");
+        throw Contradiction("Deduced that $name is innocent but this card is already guilty");
+
+      case Conviction.innocent:
+        break;
 
       case Conviction.unknown:
         if (!category.possibleGuilty.remove(this)) {
-          throw Exception("Innocent card " + name + " not found in list of possible guilty cards");
+          throw Exception("Innocent card $name not found in list of possible guilty cards");
         }
 
         conviction = Conviction.innocent;
-        gProgressReport += name + " has been marked innocent\n";
+        reportProgress("$name has been marked innocent");
 
         recheckLocation();
         category.recheckGuilty();
-        break;
-
-      default:
     }
   }
 
   void processGuilty() {
     switch (conviction) {
+      case Conviction.guilty:
+        break;
+
       case Conviction.innocent:
-        throw Contradiction("Deduced that " + name + " is guilty but this card is already innocent");
+        throw Contradiction("Deduced that $name is guilty but this card is already innocent");
 
       case Conviction.unknown:
         if (category.possibleGuilty.contains(this)) {
-          throw Exception("Guilty card " + name + " not found in list of possible guilty cards");
+          throw Exception("Guilty card $name not found in list of possible guilty cards");
         }
 
         conviction = Conviction.guilty;
-        gProgressReport += name + " has been marked guilty\n";
+        reportProgress("$name has been marked guilty");
 
         for (Card card in category.cards) {
           if (card != this) {
@@ -75,11 +87,8 @@ class Card {
         }
 
         for (Player player in gPlayers) {
-          player.processDoesntHave([ this ], player.stages.length - 1);
+          player.processDoesNotHave([this], player.stages.length - 1);
         }
-        break;
-
-      default:
     }
   }
 
@@ -88,15 +97,14 @@ class Card {
   *
   * If a player owns this card, then the only players who can have owned it earlier are this player and any players who are now out.
   */
-  void processBelongsTo(Player player, final int stageIndex)
-  {
-    if (ownedBy(player, stageIndex)) {
+  void processOwnedBy(Player player, final int stageIndex) {
+    if (isOwnedBy(player, stageIndex)) {
       return;
     }
 
     processInnocent();
-    if (!couldBelongTo(player, stageIndex)) {
-      throw Contradiction(name + " can't be owned by " + player.name + " (Stage " + stageIndex.toString() + ")");
+    if (!couldBeOwnedBy(player, stageIndex)) {
+      throw Contradiction("$name can't be owned by ${player.name} (Stage ${stageIndex.toString()})");
     }
 
     for (int i = stageIndex; player.isIn(i); ++i) {
@@ -104,25 +112,25 @@ class Card {
 
       for (Player playerLeft in gPlayersLeft) {
         if (playerLeft != player) {
-          playerLeft.processDoesntHave([ this ], i);
+          playerLeft.processDoesNotHave([ this], i);
         }
       }
     }
   }
 
   /*
-  * Always call processDoesntHave, this call will be handled
+  * Always call processDoesNotBelongTo, this call will be handled
   *
   * If this card doesn't belong to a player, they can't have had it earlier.
   * Once a player gets a card they hold it until they're out.
   */
-  void processDoesntBelongTo(final Player player, final int stageIndex) {
-    if (!couldBelongTo(player, stageIndex)) {
+  void processNotOwnedBy(final Player player, final int stageIndex) {
+    if (!couldBeOwnedBy(player, stageIndex)) {
       return;
     }
 
-    if (ownedBy(player, stageIndex)) {
-      throw Contradiction("Previous info says " + player.name + " has " + name);
+    if (isOwnedBy(player, stageIndex)) {
+      throw Contradiction("Previous info says ${player.name} has $name");
     }
 
     for (int i = stageIndex + 1; i != 0;) {
@@ -138,11 +146,11 @@ class Card {
   * If the player that's out couldn't have had this card then our info doesn't change otherwise anyone left can have this card now.
   */
   void processGuessedWrong(final Player guesser) {
-    if (couldBelongTo(guesser, stages.length - 1)) {
-      stages.add(stages.last);
+    if (couldBeOwnedBy(guesser, stages.length - 1)) {
+      stages.add(CardStage.clone(stages.last));
     }
     else {
-      stages.add(_Stage(gPlayersLeft.toSet()));
+      stages.add(CardStage(gPlayersLeft));
     }
   }
 
@@ -151,7 +159,7 @@ class Card {
   */
   void recheckLocation() {
     for (int i = 0; i != stages.length; ++i) {
-      if (locationKnown(i)) {
+      if (isLocationKnown(i)) {
         continue;
       }
 
@@ -167,24 +175,37 @@ class Card {
       }
     }
   }
+
+  Pair<String, String> display(final int stageIndex) {
+    return Pair(nickname, stages[stageIndex].owner?.name ?? (isGuilty() ? "Guilty" : ""));
+  }
 }
 
-
 class Category {
+  String name;
   List<Card> cards = [];
   List<Card> possibleGuilty =[];
 
+  Category(this.name);
+
   void reset() {
-    possibleGuilty = cards;
+    for (Card card in cards) {
+      card.reset();
+      possibleGuilty.add(card);
+    }
   }
 
   void recheckGuilty() {
     switch (possibleGuilty.length) {
       case 0:
-        throw Contradiction("Ruled out all cards in category starting with " + cards.first.name);
+        throw Contradiction("Ruled out all cards in $name");
 
       case 1:
         possibleGuilty.first.processGuilty();
     }
+  }
+
+  List<Pair<String, String>> display(final int stageIndex) {
+    return [ for (Card card in cards) card.display(stageIndex)];
   }
 }

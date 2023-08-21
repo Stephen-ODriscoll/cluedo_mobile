@@ -1,13 +1,11 @@
 import "player.dart";
 import "card.dart";
 
-enum Action
-{
+enum Action {
   missed,
   asked,
   guessed
 }
-
 
 abstract class Turn {
   final Action action;
@@ -15,19 +13,16 @@ abstract class Turn {
 
   Turn(this.detective, this.action);
 
-  bool redistribute() { return false; }
-  String witnessName() { return ""; }
+  bool redistribute() => false;
+  String witnessName() => "";
   @override String toString();
 }
-
 
 class Missed extends Turn {
   Missed(final Player detective) :
         super(detective, Action.missed);
 
-  @override String toString() {
-    return detective.name + " missed a turn";
-  }
+  @override String toString() => "${detective.name} missed a turn";
 }
 
 
@@ -35,18 +30,16 @@ class Asked extends Turn {
   final Player witness;
   final List<Card> cards;
   final bool shown;
-  final int? shownIndex;
+  final int shownIndex;
 
-  Asked(final Player detective, this.witness, this.cards, this.shown, [this.shownIndex]) :
+  Asked(final Player detective, this.witness, this.cards, this.shown, [this.shownIndex = -1]) :
         super(detective, Action.asked);
 
   @override
-  String witnessName() { return witness.name; }
+  String witnessName() => witness.name;
 
   @override
-  String toString() {
-    return witness.name + (shown ? " has either " : " doesn't have ") + cards.map((a) => a.nickname).join(", ");
-  }
+  String toString() => "${witness.name} ${shown ? "has either" : "doesn't have"} ${cards.map((a) => a.nickname).join(", ")}";
 }
 
 
@@ -59,10 +52,8 @@ class Guessed extends Turn {
       super(detective, Action.guessed);
 
   @override
-  bool redistribute() { return !correct; }
+  bool redistribute() => !correct;
 
   @override
-  String toString() {
-    return detective.name + " guessed " + (correct ? "correctly " : "incorrectly ") + cards.map((a) => a.nickname).join(", ");
-  }
+  String toString() => "${detective.name} guessed ${(correct ? "correctly" : "incorrectly")} ${cards.map((a) => a.nickname).join(", ")}";
 }

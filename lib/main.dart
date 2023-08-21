@@ -1,66 +1,105 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-void main() {
-  runApp(const MyApp());
+import "view/tabs.dart";
+
+import "controller/storage.dart";
+import "model/constant.dart";
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await StorageManager().loading; // Load Assets
+  runApp(const Cluedo());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Cluedo extends StatelessWidget {
+  const Cluedo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Cluedo Analyser",
-      theme: ThemeData(
+    const color = 0xFF600000;
+    const int r = 0x60, g = 0x00, b = 0x00;
+    const Map<int, Color> colors = {
+      50: Color.fromRGBO(r, g, b, .55),
+      100: Color.fromRGBO(r, g, b, .6),
+      200: Color.fromRGBO(r, g, b, .65),
+      300: Color.fromRGBO(r, g, b, .7),
+      400: Color.fromRGBO(r, g, b, .75),
+      500: Color.fromRGBO(r, g, b, .8),
+      600: Color.fromRGBO(r, g, b, .85),
+      700: Color.fromRGBO(r, g, b, .9),
+      800: Color.fromRGBO(r, g, b, .95),
+      900: Color.fromRGBO(r, g, b, 1)
+    };
 
-        primarySwatch: Colors.blue,
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: const MaterialColor(color, colors),
+        primaryColor: const Color.fromRGBO(r, g, b, 1)
       ),
-      home: const MyHomePage(),
+      home: const HomePage()
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _HomePageState extends State<HomePage> {
+  int _numPlayers = MIN_PLAYERS;
+  String _version = StorageManager().versions.keys.first;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Cluedo Analyser"),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "You have pushed the button this many times:",
+          children: [
+            DropdownButton(
+              value: _numPlayers,
+              icon: const Icon(Icons.keyboard_arrow_down),
+              items: [
+                for (int i = MIN_PLAYERS; i <= MAX_PLAYERS; ++i) DropdownMenuItem(
+                  value: i,
+                  child: Text("$i Players")
+                )
+              ],
+              onChanged: (int? newNum) {
+                setState(() {
+                  _numPlayers = newNum!;
+                });
+              }
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            DropdownButton(
+              value: _version,
+              icon: const Icon(Icons.keyboard_arrow_down),
+              items: [
+                for (String key in StorageManager().versions.keys) DropdownMenuItem(
+                  value: key,
+                  child: Text(key)
+                )
+              ],
+              onChanged: (String? newVersion) {
+                setState(() {
+                  _version = newVersion!;
+                });
+              }
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Tabs(_numPlayers, _version)));
+              },
+              child: const Text('Continue')
+            )
+          ]
+        )
+      )
     );
   }
 }

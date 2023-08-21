@@ -6,7 +6,7 @@
       ["Col. Mustard", "Mustard"],
       ["Mrs. Peacock", "Peacock"],
       ["Miss. Scarlet", "Scarlet"],
-      ["Mrs. White", "White"]
+      ["Dr. Orchid", "Orchid"]
     ],
     "Weapons": [
       ["CandleStick", "Stick"],
@@ -14,17 +14,17 @@
       ["Lead Pipe", "Pipe"],
       ["Revolver", "Gun"],
       ["Rope", "Rope"],
-      ["Spanner", "Spanner"]
+      ["Wrench", "Wrench"]
     ],
     "Rooms":
     [
-      ["Conservatory", "Cons."],
+      ["Conservatory", "Conservatory"],
       ["Lounge", "Lounge"],
       ["Kitchen", "Kitchen"],
       ["Library", "Library"],
       ["Hall", "Hall"],
       ["Study", "Study"],
-      ["Ball Room", "Ball"],
+      ["Ballroom", "Ballroom"],
       ["Dining Room", "Dining"],
       ["Billiard Room", "Billiard"]
     ]
@@ -39,18 +39,18 @@
       ["Waylon Smithers", "Waylon"]
     ],
     "Weapons": [
-      ["Poisoned Doughnut", "Nut"],
+      ["Poisoned Doughnut", "Doughnut"],
       ["Extend-o-Glove", "Glove"],
       ["Necklace", "Necklace"],
-      ["Slingshot", "Shot"],
+      ["Slingshot", "Slingshot"],
       ["Plutonium Rod", "Rod"],
-      ["Saxophone", "Sax"]
+      ["Saxophone", "Saxophone"]
     ],
     "Rooms": [
-      ["Barney's Bowl-a-Rama", "Barney's"],
+      ["Barney's Bowl-a-Rama", "Barney's Bowl"],
       ["Krustylu Studios", "Krustylu"],
-      ["Nuclear Power Plant", "Plant"],
-      ["The Simpsons House", "House"],
+      ["Nuclear Power Plant", "Power Plant"],
+      ["The Simpsons House", "Simpsons House"],
       ["The Frying Dutchman", "Dutchman"],
       ["Kwik-e-Mart", "Mart"],
       ["Burns Manor", "Manor"],
@@ -84,7 +84,7 @@
       ["Gringotts", "Gringotts"],
       ["Weasley's Wizard Wheezes", "Weasley's"],
       ["Ministry of Magic", "Ministry"],
-      ["12 Grimmauld Place", "Grimmauld"]
+      ["12 Grimmauld Place", "Grimmauld Place"]
     ]
   }
 }
