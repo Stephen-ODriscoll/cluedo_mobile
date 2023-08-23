@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../components/custom_button.dart";
+import "../components/custom_text.dart";
 
 import "../../controller/controller.dart";
 import "../../model/global.dart";
@@ -36,19 +37,19 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Take Turn"),
+      title: const CustomText("Take Turn"),
       content: Center(
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text("Player:"),
+                const CustomText("Player:"),
                 DropdownButton(
                   value: _detectiveIndex,
                   items: [
                     for (final (i, player) in gPlayersLeft.indexed)
-                      DropdownMenuItem(value: i, child: Text(player.name))
+                      DropdownMenuItem(value: i, child: CustomText(player.name))
                   ],
                   onChanged: (int? newIndex) {
                     setState(() {
@@ -61,13 +62,13 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text("Action:"),
+                const CustomText("Action:"),
                 DropdownButton(
                     value: _actionIndex,
                     items: const [
-                      DropdownMenuItem(value: 0, child: Text("Missed")),
-                      DropdownMenuItem(value: 1, child: Text("Asked")),
-                      DropdownMenuItem(value: 2, child: Text("Guessed"))
+                      DropdownMenuItem(value: 0, child: CustomText("Missed")),
+                      DropdownMenuItem(value: 1, child: CustomText("Asked")),
+                      DropdownMenuItem(value: 2, child: CustomText("Guessed"))
                     ],
                     onChanged: (int? newIndex) {
                       setState(() { _actionIndex = newIndex!; });
@@ -79,12 +80,12 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("Player:"),
+                  const CustomText("Player:"),
                   DropdownButton(
                       value: _witnessIndex,
                       items: [
                         for (final (i, player) in gPlayersLeft.indexed)
-                          DropdownMenuItem(value: i, child: Text(player.name))
+                          DropdownMenuItem(value: i, child: CustomText(player.name))
                       ],
                       onChanged: (int? newIndex) {
                         setState(() { _witnessIndex = newIndex!; });
@@ -95,17 +96,17 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
             if (_actionIndex != 0)
               Column(
               children: [
-                const Text(""),
+                const CustomText(""),
                 for (final (i, category) in gCategories.indexed)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("${category.name}:"),
+                      CustomText("${category.name}:"),
                       DropdownButton(
                         value: _cardIndexes[i],
                         items: [
                           for (final (j, card) in category.cards.indexed)
-                            DropdownMenuItem(value: j, child: Text(card.name))
+                            DropdownMenuItem(value: j, child: CustomText(card.name))
                         ],
                         onChanged: (int? newIndex) {
                           setState(() { _cardIndexes[i] = newIndex!; });
@@ -113,15 +114,15 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                       )
                     ]
                   ),
-                const Text(""),
+                const CustomText(""),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(_actionIndex == 1 ? "Shown:" : "Correct:"),
+                    CustomText(_actionIndex == 1 ? "Shown:" : "Correct:"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Yes"),
+                        const CustomText("Yes"),
                         Radio(
                           value: true,
                           groupValue: _success,
@@ -134,7 +135,7 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("No"),
+                        const CustomText("No"),
                         Radio(
                           value: false,
                           groupValue: _success,
@@ -150,13 +151,13 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Text("Which:"),
+                      const CustomText("Which:"),
                       DropdownButton(
                           value: _shownIndex,
                           items: [
-                            const DropdownMenuItem(value: -1, child: Text("Unknown")),
+                            const DropdownMenuItem(value: -1, child: CustomText("Unknown")),
                             for (final (i, category) in gCategories.indexed)
-                              DropdownMenuItem(value: i, child: Text(category.cards[_cardIndexes[i]].name))
+                              DropdownMenuItem(value: i, child: CustomText(category.cards[_cardIndexes[i]].name))
                           ],
                           onChanged: (int? newIndex) {
                             setState(() { _shownIndex = newIndex!; });
@@ -166,7 +167,7 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                   )
               ]
             ),
-            const Text(""),
+            const CustomText(""),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "../components/custom_text.dart";
+
 import "../../controller/controller.dart";
 import "../../model/global.dart";
 
@@ -27,13 +29,13 @@ class _CardInfoTabState extends State<CardInfoTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(""),
-                    Text(category.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const CustomText(""),
+                    CustomBoldText(category.name),
                     Table(
                       border: TableBorder.all(),
                       children: [
                         for (final cardPair in category.display(0))
-                          TableRow(children: [ Text(cardPair.first), Text(cardPair.second) ])
+                          TableRow(children: [ CustomText(cardPair.first), CustomText(cardPair.second) ])
                       ]
                     )
                   ]
