@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "../components/custom_text.dart";
+
 import "../../utils/progress_report.dart";
 
 class ProgressReportTab extends StatelessWidget {
@@ -7,6 +9,6 @@ class ProgressReportTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(getProgressReport());
+    return CustomText(getProgressReport());
   }
 }

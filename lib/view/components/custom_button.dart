@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
-class CustomButton extends StatelessWidget {
+import "custom_text.dart";
 
+class CustomButton extends StatelessWidget {
   final String _text;
   final void Function()? _action;
 
@@ -9,6 +10,6 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: _action, child: Text(_text));
+    return ElevatedButton(onPressed: _action, child: CustomText(_text));
   }
 }

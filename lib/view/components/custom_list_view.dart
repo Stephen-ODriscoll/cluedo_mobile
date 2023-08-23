@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 
 class CustomListView extends StatelessWidget {
-
   final List<String> _items;
   final int? _selectedIndex;
   final void Function(int) _indexChangeAction;
