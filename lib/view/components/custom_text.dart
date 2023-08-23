@@ -7,7 +7,7 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(_text);
+    return Text(_text, style: const TextStyle(fontFamily: 'Lora'));
   }
 }
 
@@ -18,6 +18,6 @@ class CustomBoldText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(_text, style: const TextStyle(fontWeight: FontWeight.bold));
+    return Text(_text, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Lora'));
   }
 }
