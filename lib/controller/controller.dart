@@ -109,14 +109,14 @@ class Controller {
           throw Exception("Failed to find card shown");
         }
 
-        witness.processHas(asked.cards[asked.shownIndex], gNumStages - 1);
+        witness.analyseHas(asked.cards[asked.shownIndex], gNumStages - 1);
       }
       else {
-        witness.processHasEither(asked.cards, gNumStages - 1);
+        witness.analyseHasEither(asked.cards, gNumStages - 1);
       }
     }
     else {
-      witness.processDoesNotHave(asked.cards, gNumStages - 1);
+      witness.analyseDoesNotHave(asked.cards, gNumStages - 1);
     }
   }
 
@@ -149,7 +149,7 @@ class Controller {
 
       for (Category category in gCategories) {
         for (Card card in category.cards) {
-          card.processGuessedWrong(detective);
+          card.analyseGuessedWrong(detective);
         }
       }
 

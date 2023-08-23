@@ -45,15 +45,15 @@ class Player {
     stages = [ PlayerStage() ];
 
     for (Card card in presets.first.ownedCards) {
-      processHas(card, 0);
+      analyseHas(card, 0);
     }
   }
 
   /*
   * If a player gets a card, they always hold it until they're out.
   */
-  void processHas(Card card, final int stageIndex) {
-    card.processOwnedBy(this, stageIndex);
+  void analyseHas(Card card, final int stageIndex) {
+    card.analyseOwnedBy(this, stageIndex);
 
     for (int i = stageIndex; isIn(i); ++i) {
       if (!stages[i].has.add(card)) {
@@ -64,7 +64,7 @@ class Player {
         for (Category category in gCategories) {
           for (Card card in category.cards) {
             if (!card.isOwnedBy(this, i)) {
-              processDoesNotHave([ card ], i);
+              analyseDoesNotHave([ card ], i);
             }
           }
         }
@@ -78,9 +78,9 @@ class Player {
   * Once a player gets a card they hold it until they're out.
   * If a Player doesn't have a card, they can't have had it earlier.
   */
-  void processDoesNotHave(final List<Card> cards, final int stageIndex) {
+  void analyseDoesNotHave(final List<Card> cards, final int stageIndex) {
     for (Card card in cards) {
-      card.processNotOwnedBy(this, stageIndex);
+      card.analyseNotOwnedBy(this, stageIndex);
 
       bool loop = true;
       for (int i = stageIndex + 1; i != 0 && loop;) {
@@ -99,7 +99,7 @@ class Player {
   /*
   * Process of elimination until we find the card that was shown by this player.
   */
-  void processHasEither(final List<Card> cards, final int stageIndex) {
+  void analyseHasEither(final List<Card> cards, final int stageIndex) {
     List<Card> possibleCards = [];
     for (Card card in cards) {
       if (card.couldBeOwnedBy(this, stageIndex)) {
@@ -112,7 +112,7 @@ class Player {
         throw Contradiction("$name can't have any of those cards");
 
       case 1:
-        processHas(possibleCards.first, stageIndex);
+        analyseHas(possibleCards.first, stageIndex);
         break;
 
       default:
@@ -135,7 +135,7 @@ class Player {
     }
     else {
       for (Card card in presets[stages.length - 1].ownedCards) {
-        processHas(card, stages.length - 1);
+        analyseHas(card, stages.length - 1);
       }
     }
 
@@ -166,7 +166,7 @@ class Player {
             throw Contradiction("$name can't have any of the 3 cards they're supposed to");
 
           case 1:
-            processHas(stages[i].hasEither[a].first, i);
+            analyseHas(stages[i].hasEither[a].first, i);
             stages[i].hasEither.removeAt(a);
             break;
 

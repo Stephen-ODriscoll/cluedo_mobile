@@ -43,7 +43,7 @@ class Card {
     conviction = Conviction.unknown;
   }
 
-  void processInnocent() {
+  void analyseInnocent() {
     switch (conviction) {
       case Conviction.guilty:
         throw Contradiction("Deduced that $name is innocent but this card is already guilty");
@@ -64,7 +64,7 @@ class Card {
     }
   }
 
-  void processGuilty() {
+  void analyseGuilty() {
     switch (conviction) {
       case Conviction.guilty:
         break;
@@ -82,12 +82,12 @@ class Card {
 
         for (Card card in category.cards) {
           if (card != this) {
-            card.processInnocent();
+            card.analyseInnocent();
           }
         }
 
         for (Player player in gPlayers) {
-          player.processDoesNotHave([this], player.stages.length - 1);
+          player.analyseDoesNotHave([this], player.stages.length - 1);
         }
     }
   }
@@ -97,12 +97,12 @@ class Card {
   *
   * If a player owns this card, then the only players who can have owned it earlier are this player and any players who are now out.
   */
-  void processOwnedBy(Player player, final int stageIndex) {
+  void analyseOwnedBy(Player player, final int stageIndex) {
     if (isOwnedBy(player, stageIndex)) {
       return;
     }
 
-    processInnocent();
+    analyseInnocent();
     if (!couldBeOwnedBy(player, stageIndex)) {
       throw Contradiction("$name can't be owned by ${player.name} (Stage ${stageIndex.toString()})");
     }
@@ -112,7 +112,7 @@ class Card {
 
       for (Player playerLeft in gPlayersLeft) {
         if (playerLeft != player) {
-          playerLeft.processDoesNotHave([ this], i);
+          playerLeft.analyseDoesNotHave([ this], i);
         }
       }
     }
@@ -124,7 +124,7 @@ class Card {
   * If this card doesn't belong to a player, they can't have had it earlier.
   * Once a player gets a card they hold it until they're out.
   */
-  void processNotOwnedBy(final Player player, final int stageIndex) {
+  void analyseNotOwnedBy(final Player player, final int stageIndex) {
     if (!couldBeOwnedBy(player, stageIndex)) {
       return;
     }
@@ -145,7 +145,7 @@ class Card {
   /*
   * If the player that's out couldn't have had this card then our info doesn't change otherwise anyone left can have this card now.
   */
-  void processGuessedWrong(final Player guesser) {
+  void analyseGuessedWrong(final Player guesser) {
     if (couldBeOwnedBy(guesser, stages.length - 1)) {
       stages.add(CardStage.clone(stages.last));
     }
@@ -165,12 +165,12 @@ class Card {
 
       switch (stages[i].possibleOwners.length) {
         case 0:
-          processGuilty();
+          analyseGuilty();
           break;
 
         case 1:
           if (conviction == Conviction.innocent) {
-            stages[i].possibleOwners.first.processHas(this, i);
+            stages[i].possibleOwners.first.analyseHas(this, i);
           }
       }
     }
@@ -201,7 +201,7 @@ class Category {
         throw Contradiction("Ruled out all cards in $name");
 
       case 1:
-        possibleGuilty.first.processGuilty();
+        possibleGuilty.first.analyseGuilty();
     }
   }
 
