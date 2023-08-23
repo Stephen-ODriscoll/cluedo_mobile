@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "custom_text.dart";
+
 class CustomListView extends StatelessWidget {
   final List<String> _items;
   final int? _selectedIndex;
@@ -17,7 +19,7 @@ class CustomListView extends StatelessWidget {
       child: ListView(
         children: [
           for (final (index, item) in _items.indexed) ListTile(
-            title: Text(item),
+            title: CustomText(item),
             selected: (index == _selectedIndex),
             selectedColor: Colors.black,
             selectedTileColor: Colors.blueAccent,
