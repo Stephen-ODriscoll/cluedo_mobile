@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+import "view/components/custom_text.dart";
 import "view/tabs.dart";
 
 import "controller/storage.dart";
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               items: [
                 for (int i = MIN_PLAYERS; i <= MAX_PLAYERS; ++i) DropdownMenuItem(
                   value: i,
-                  child: Text("$i Players")
+                  child: CustomText("$i Players")
                 )
               ],
               onChanged: (int? newNum) {
@@ -80,7 +81,7 @@ class _HomePageState extends State<HomePage> {
               items: [
                 for (String key in StorageManager().versions.keys) DropdownMenuItem(
                   value: key,
-                  child: Text(key)
+                  child: CustomText(key)
                 )
               ],
               onChanged: (String? newVersion) {
@@ -95,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(builder: (context) => Tabs(_numPlayers, _version)));
               },
-              child: const Text('Continue')
+              child: const CustomText('Continue')
             )
           ]
         )
