@@ -4,13 +4,13 @@ import "../components/custom_text.dart";
 
 import "../../controller/controller.dart";
 
-class PlayerInfoTab extends StatelessWidget {
+class TurnInfoTab extends StatelessWidget {
   final Controller _controller;
 
-  const PlayerInfoTab(this._controller, {super.key});
+  const TurnInfoTab(this._controller, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return CustomText(_controller.playersInfo);
+    return CustomText(_controller.turnsInfo.join("\n"));
   }
 }

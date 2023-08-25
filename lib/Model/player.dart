@@ -29,7 +29,7 @@ class PlayerStage {
   PlayerStage.clone(PlayerStage s) :
         has = Set.from(s.has),
         doesNotHave = Set.from(s.doesNotHave),
-        hasEither = [for (final item in s.hasEither) List.from(item)];
+        hasEither = [for (final cards in s.hasEither) List.from(cards)];
 }
 
 class Player {
@@ -161,6 +161,6 @@ class Player {
     return "$name"
       "\n\thas: ${stage.has.map((card) => card.nickname).join(", ")} ${allCardsKnown(stageIndex) ? " (All Cards)" : ""}"
       "\n\thas either: ${stage.hasEither.map((cards) => cards.map((card) => card.nickname).join("/")).join(", ")}"
-      "\n\tdoesn't have: ${stage.doesNotHave.map((card) => card.nickname).join(", ")}\n\n";
+      "\n\tdoesn't have: ${stage.doesNotHave.map((card) => card.nickname).join(", ")}\n";
   }
 }

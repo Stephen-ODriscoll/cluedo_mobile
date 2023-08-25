@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 
-import "tabs/progress_report_tab.dart";
+import "tabs/main_info_tab.dart";
 import "tabs/player_info_tab.dart";
 import "tabs/card_info_tab.dart";
+import "tabs/turn_info_tab.dart";
 import "tabs/settings_tab.dart";
 
 import "popups/error_popup.dart";
@@ -42,23 +43,25 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             title: const TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.portrait)),
-                Tab(icon: Icon(Icons.grid_on_sharp)),
-                Tab(icon: Icon(Icons.output)),
+                Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(Icons.grid_on)),
+                Tab(icon: Icon(Icons.format_align_left)),
+                Tab(icon: Icon(Icons.format_list_numbered)),
                 Tab(icon: Icon(Icons.settings))
               ]
             )
           ),
           body: TabBarView(
             children: [
-              PlayerInfoTab(_controller),
+              MainInfoTab(_controller),
               CardInfoTab(_controller),
-              const ProgressReportTab(),
+              PlayerInfoTab(_controller),
+              TurnInfoTab(_controller),
               SettingsTab(_controller)
             ]
           )
