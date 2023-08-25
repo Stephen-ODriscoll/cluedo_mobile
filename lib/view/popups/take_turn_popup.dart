@@ -4,33 +4,32 @@ import "../components/custom_button.dart";
 import "../components/custom_text.dart";
 
 import "../../controller/controller.dart";
-import "../../model/global.dart";
 
 class TakeTurnPopup extends StatefulWidget {
-
   final Controller _controller;
-  final int _playerIndex;
 
-  const TakeTurnPopup(this._controller, this._playerIndex, {super.key});
+  const TakeTurnPopup(this._controller, {super.key});
 
   @override
   State<StatefulWidget> createState() => _TakeTurnPopupState();
 }
 
 class _TakeTurnPopupState extends State<TakeTurnPopup> {
-
-  int _detectiveIndex = 0;
-  int _actionIndex = 0;
-  int _witnessIndex = 0;
-  final List<int> _cardIndexes = [for (final _ in gCategories) 0];
-  bool _success = false;
-  int _shownIndex = 0;
+  late int _detectiveIndex;
+  late int _actionIndex;
+  late int _witnessIndex;
+  late List<int> _cardIndexes;
+  late bool _success;
+  late int _shownIndex;
 
   @override
   void initState() {
     super.initState();
-    _detectiveIndex = widget._playerIndex;
+    _detectiveIndex = widget._controller.selectedPlayerIndex;
+    _actionIndex = 0;
     _witnessIndex = (_detectiveIndex == 0 ? 1 : 0);
+    _cardIndexes = [for (int i = 0; i < widget._controller.numCategories; ++i) 0];
+    _success = false;
     _shownIndex = -1;
   }
 
@@ -48,8 +47,8 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                 DropdownButton(
                   value: _detectiveIndex,
                   items: [
-                    for (final (i, player) in gPlayersLeft.indexed)
-                      DropdownMenuItem(value: i, child: CustomText(player.name))
+                    for (final (i, playerName) in widget._controller.playerNames.indexed)
+                      DropdownMenuItem(value: i, child: CustomText(playerName))
                   ],
                   onChanged: (int? newIndex) {
                     setState(() {
@@ -84,8 +83,8 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                   DropdownButton(
                       value: _witnessIndex,
                       items: [
-                        for (final (i, player) in gPlayersLeft.indexed)
-                          DropdownMenuItem(value: i, child: CustomText(player.name))
+                        for (final (i, playerName) in widget._controller.playerNames.indexed)
+                          DropdownMenuItem(value: i, child: CustomText(playerName))
                       ],
                       onChanged: (int? newIndex) {
                         setState(() { _witnessIndex = newIndex!; });
@@ -97,16 +96,16 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
               Column(
               children: [
                 const CustomText(""),
-                for (final (i, category) in gCategories.indexed)
+                for (final (i, categoryInfo) in widget._controller.categoriesInfo.indexed)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      CustomText("${category.name}:"),
+                      CustomText("${categoryInfo.name}:"),
                       DropdownButton(
                         value: _cardIndexes[i],
                         items: [
-                          for (final (j, card) in category.cards.indexed)
-                            DropdownMenuItem(value: j, child: CustomText(card.name))
+                          for (final (j, cardInfo) in categoryInfo.cardsInfo.indexed)
+                            DropdownMenuItem(value: j, child: CustomText(cardInfo.first))
                         ],
                         onChanged: (int? newIndex) {
                           setState(() { _cardIndexes[i] = newIndex!; });
@@ -156,8 +155,8 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                           value: _shownIndex,
                           items: [
                             const DropdownMenuItem(value: -1, child: CustomText("Unknown")),
-                            for (final (i, category) in gCategories.indexed)
-                              DropdownMenuItem(value: i, child: CustomText(category.cards[_cardIndexes[i]].name))
+                            for (final (i, categoryInfo) in widget._controller.categoriesInfo.indexed)
+                              DropdownMenuItem(value: i, child: CustomText(categoryInfo.cardsInfo[_cardIndexes[i]].first))
                           ],
                           onChanged: (int? newIndex) {
                             setState(() { _shownIndex = newIndex!; });

@@ -1,161 +1,120 @@
-import "../utils/progress_report.dart";
+import "../utils/contradiction.dart";
 import "../utils/pair.dart";
-import "../model/constant.dart";
-import "../model/global.dart";
+
 import "../model/player.dart";
 import "../model/turn.dart";
 import "../model/card.dart";
+import "../model/enum.dart";
+
+import "analyser.dart";
 import "storage.dart";
 
+class CategoryInfo {
+  final String name;
+  final List<Pair<String, String>> cardsInfo;
+
+  CategoryInfo(this.name, this.cardsInfo);
+}
+
 class Controller {
-  bool _gameOver = false;
-  final void Function() _updateAllAction;
+  final List<Turn> _turns = [];
+  final List<Player> _players = [];
+  final List<Player> _playersOut = [];
+  final List<Player> _playersLeft = [];
+  final List<Category> _categories = [];
+  late final Analyser _analyser;
+
+  final void Function() _updateGUI;
   
-  Controller(final int numPlayers, final String version, this._updateAllAction) {
-    gNumStages = 1;
-    for (int i = 0; i != numPlayers; ++i) {
-      gPlayers.add(Player());
-      gPlayersLeft.add(gPlayers.last);
+  Controller(final int numPlayers, final String version, this._updateGUI) {
+    for (int i = 0; i < numPlayers; ++i) {
+      _players.add(Player());
     }
 
     StorageManager storageManager = StorageManager();
     if (!storageManager.versions.containsKey(version)) {
-      throw Exception("Couldn't find setup for version $version");
+      throw Exception("Couldn't find config for version $version");
     }
 
-    gCategories.clear();
     final versionSetup = storageManager.versions[version];
+
     for (final categoryEntry in versionSetup.entries) {
-      gCategories.add(Category(categoryEntry.key));
-      for (final cardDetails in categoryEntry.value) {
-        Card card = Card(cardDetails[0], cardDetails[1], gCategories.last);
-        gCategories.last.cards.add(card);
-        gCategories.last.possibleGuilty.add(card);
-      }
+      _categories.add(Category(categoryEntry.key,
+          [for (final cardDetails in categoryEntry.value) Pair(cardDetails[0], cardDetails[1])]
+          , _players));
     }
 
-    resetProgressReport(START_MESSAGE);
+    _analyser = Analyser(_players, _playersOut, _playersLeft, _categories);
   }
 
-  void reAnalyseAll() {
-    gNumStages = 1;
-    _gameOver = false;
-    gPlayersOut.clear();
-    gPlayersLeft.clear();
-    gWrongGuesses.clear();
+  int stageNumber = 1;
+  int selectedPlayerIndex = -1;
+  Status _status = Status.okay;
 
-    for (Category category in gCategories) {
-      category.reset();
-    }
-
-    for (Player player in gPlayers) {
-      player.reset();
-      gPlayersLeft.add(player);
-    }
-
-    resetProgressReport(START_MESSAGE);
-
-    // Start analysis again
-    for (Turn turn in gTurns) {
-      analyseTurn(turn);
-    }
-
-    _updateAllAction();
-  }
-
-  void processTurn(final Turn newTurn, {final Turn? oldTurn}) {
-    if (oldTurn != null) {
-      int index = gTurns.indexOf(oldTurn);
-      if (index == -1) {
-        throw Exception("Failed to find turn in turns list");
-      }
-
-      gTurns[index] = newTurn;
-      reAnalyseAll();
-    }
-    else {
-      analyseTurn(newTurn);
-      gTurns.add(newTurn);
-    }
-
-    _updateAllAction();
-  }
-
-  void analyseTurn(final Turn turn) {
-    reportProgress(turn.toString());
-
-    switch (turn.action) {
-      case Action.missed:
-        moveToBack(turn.detective);
-        break;
-
-      case Action.asked:
-        analyseAsked(turn as Asked);
-        moveToBack(turn.detective);
-        break;
-
-      case Action.guessed:
-        analyseGuessed(turn as Guessed);
-        break;
+  String get getStatus {
+    switch (_status) {
+      case Status.okay:           return "Okay";
+      case Status.infoNeeded:     return "Info Needed";
+      case Status.contradiction:  return "Contradiction";
+      case Status.exception:      return "Exception";
     }
   }
 
-  void analyseAsked(final Asked asked) {
-    Player witness = asked.witness;
+  List<Pair<int, String>> get actionStrings => [
+    Pair(Action.missed.index,  "Missed"),
+    Pair(Action.asked.index,   "Asked"),
+    Pair(Action.guessed.index, "Guessed")
+  ];
 
-    if (asked.shown) {
-      if (asked.shownIndex != -1) {
-        if (asked.cards.length <= asked.shownIndex) {
-          throw Exception("Failed to find card shown");
+  List<String> get playerNames =>
+      [for (final player in _playersLeft) player.name] +
+          [ for (int i = stageNumber - 1; i < _playersOut.length; ++i) _playersOut[i].name];
+
+  int get numCategories => _categories.length;
+
+  List<CategoryInfo> get categoriesInfo =>
+      List.from(_categories.map(
+              (category) => CategoryInfo(category.name, List.from(category.cards.map(
+                      (card) => card.display(stageNumber - 1))))));
+
+  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+
+  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
+
+  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
+
+  void _reAnalyseAll() {
+    _analyser.reset();
+    for (Turn turn in _turns) {
+      _analyser.analyseTurn(turn);
+    }
+  }
+
+  void processTurn(final Turn newTurn, [final Turn? oldTurn]) {
+    try {
+      if (oldTurn != null) {
+        int index = _turns.indexOf(oldTurn);
+        if (index == -1) {
+          throw Exception("Failed to find turn in turns list");
         }
 
-        witness.analyseHas(asked.cards[asked.shownIndex], gNumStages - 1);
+        _turns[index] = newTurn;
+
+        _reAnalyseAll();
       }
       else {
-        witness.analyseHasEither(asked.cards, gNumStages - 1);
+        _turns.add(newTurn);
+        _analyser.analyseTurn(newTurn);
       }
     }
-    else {
-      witness.analyseDoesNotHave(asked.cards, gNumStages - 1);
+    on Contradiction catch(contradiction) {
+      _status = Status.contradiction;
     }
-  }
-
-  void analyseGuessed(final Guessed guessed) {
-    if (guessed.correct) {
-      _gameOver = true;
+    on Exception catch(exception) {
+      _status = Status.exception;
     }
-    else {
-      Player detective = guessed.detective;
 
-      int index = gPlayersLeft.indexOf(detective);
-      if (index == -1) {
-        throw Exception("Failed to find ${detective.name} in players left");
-      }
-
-      gPlayersLeft.removeAt(index);
-      gPlayersOut.add(detective);
-
-      // Create new player analyses
-      if (guessed.redistribution.isEmpty) {
-        for (Player playerLeft in gPlayersLeft) {
-          playerLeft.processGuessedWrong(detective);
-        }
-      }
-      else {
-        for (int i = 0; i != gPlayersLeft.length; ++i) {
-          gPlayersLeft[i].processGuessedWrong(detective, guessed.redistribution[i]);
-        }
-      }
-
-      for (Category category in gCategories) {
-        for (Card card in category.cards) {
-          card.analyseGuessedWrong(detective);
-        }
-      }
-
-      gWrongGuesses.add(guessed.cards);
-      ++gNumStages;
-    }
+    _updateGUI();
   }
 
   void rename(final Player player, final String newName) {
@@ -163,7 +122,7 @@ class Controller {
       return;
     }
 
-    if (gPlayers.indexWhere((p) => p.name == newName) != -1) {
+    if (_players.indexWhere((p) => p.name == newName) != -1) {
       throw Exception("Player with that name already exists");
     }
 
@@ -176,17 +135,27 @@ class Controller {
     }
 
     player.presets = newPresets;
-    reAnalyseAll();
+    _reAnalyseAll();
+  }
+
+  void movePlayerUp() {
+      final player = _playersLeft.removeAt(selectedPlayerIndex);
+      _playersLeft.insert(--selectedPlayerIndex, player);
+  }
+
+  void movePlayerDown() {
+      final player = _playersLeft.removeAt(selectedPlayerIndex);
+      _playersLeft.insert(++selectedPlayerIndex, player);
   }
 
   void moveToBack(final Player player) {
-    int index = gPlayersLeft.indexOf(player);
+    int index = _playersLeft.indexOf(player);
     if (index == -1) {
       throw Exception("Failed to find ${player.name} in players left");
     }
 
-    gPlayersLeft.removeAt(index);
-    gPlayersLeft.add(player);
+    _playersLeft.removeAt(index);
+    _playersLeft.add(player);
   }
 
   void createTurn(
@@ -196,23 +165,20 @@ class Controller {
     List<int> cardIndexes,
     bool success,
     int shownIndex) {
-    for (final text in gCategories) {
-      text.name = "";
-    }
-
-    switch (actionIndex) {
-      case 0:
-        processTurn(Missed(gPlayers[detectiveIndex]));
+    switch (Action.values[actionIndex]) {
+      case Action.missed:
+        processTurn(Missed(_players[detectiveIndex]));
         break;
 
-      case 1:
-        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) gCategories[i].cards[cardIndex]];
-        processTurn(Asked(gPlayers[detectiveIndex], gPlayers[witnessIndex], cards, success, shownIndex));
-      break;
+      case Action.asked:
+        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
+        processTurn(Asked(_players[detectiveIndex], _players[witnessIndex], cards, success, shownIndex));
+        break;
 
-      case 2:
-        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) gCategories[i].cards[cardIndex]];
-        processTurn(Asked(gPlayers[detectiveIndex], gPlayers[witnessIndex], cards, success, shownIndex));
+      case Action.guessed:
+        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
+        processTurn(Guessed(_players[detectiveIndex], cards, success, []));
+        break;
     }
   }
 }

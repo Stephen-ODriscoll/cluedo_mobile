@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
 
 import "../../controller/controller.dart";
-import "../../model/global.dart";
-import "../../model/player.dart";
 
 class SettingsTab extends StatefulWidget {
   final Controller _controller;

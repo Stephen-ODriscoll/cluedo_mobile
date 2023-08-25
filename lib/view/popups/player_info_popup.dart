@@ -1,26 +1,17 @@
 import "package:flutter/material.dart";
 
-import "../../model/global.dart";
+import "../../controller/controller.dart";
 
 class PlayerInfoPopup extends StatefulWidget {
+  final Controller _controller;
 
-  final int _playerIndex;
-
-  const PlayerInfoPopup(this._playerIndex, {super.key});
+  const PlayerInfoPopup(this._controller, {super.key});
 
   @override
   State<StatefulWidget> createState() => _PlayerInfoPopupState();
 }
 
 class _PlayerInfoPopupState extends State<PlayerInfoPopup> {
-
-  int selectedPlayerIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedPlayerIndex = widget._playerIndex;
-  }
 
   @override
   Widget build(BuildContext context) {

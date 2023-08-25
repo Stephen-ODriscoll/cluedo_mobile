@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 
 import "../components/custom_list_view.dart";
 import "../components/custom_button.dart";
+
 import "../popups/player_info_popup.dart";
 import "../popups/take_turn_popup.dart";
 
 import "../../controller/controller.dart";
-import "../../model/global.dart";
 
 class PlayerInfoTab extends StatefulWidget {
   final Controller _controller;
@@ -18,45 +18,22 @@ class PlayerInfoTab extends StatefulWidget {
 }
 
 class _PlayerInfoTabState extends State<PlayerInfoTab> {
-  int _playerIndex = -1;
 
-  void movePlayerUpAction() {
-    setState(() {
-      if (0 < _playerIndex) {
-        final selected = gPlayersLeft.removeAt(_playerIndex);
-        _playerIndex = _playerIndex - 1;
-        gPlayersLeft.insert(_playerIndex, selected);
-      }
-    });
-  }
-
-  void movePlayerDownAction() {
-    setState(() {
-      if (0 <= _playerIndex && _playerIndex < gPlayersLeft.length -1) {
-        final selected = gPlayersLeft.removeAt(_playerIndex);
-        _playerIndex = _playerIndex + 1;
-        gPlayersLeft.insert(_playerIndex, selected);
-      }
-    });
+  int getPlayerIndex() {
+    return widget._controller.selectedPlayerIndex;
   }
 
   void editPlayerAction() {
     showDialog(
         context: context,
-        builder: (BuildContext context) => PlayerInfoPopup(_playerIndex)
+        builder: (BuildContext context) => PlayerInfoPopup(widget._controller)
     );
-  }
-
-  void indexChangedAction(int index) {
-    setState(() {
-      _playerIndex = index;
-    });
   }
 
   void takeTurnAction() {
     showDialog(
         context: context,
-        builder: (BuildContext context) => TakeTurnPopup(widget._controller, _playerIndex)
+        builder: (BuildContext context) => TakeTurnPopup(widget._controller)
     );
   }
 
@@ -71,9 +48,13 @@ class _PlayerInfoTabState extends State<PlayerInfoTab> {
                 height: 300,
                 width: 200,
                 child: CustomListView(
-                  gPlayersLeft.map((player) => player.name).toList(),
-                    _playerIndex,
-                    indexChangedAction
+                  widget._controller.playerNames,
+                    getPlayerIndex(),
+                    ((int newIndex) {
+                      setState(() {
+                        widget._controller.selectedPlayerIndex = newIndex;
+                      });
+                    })
                 )
               ),
               SizedBox(
@@ -84,17 +65,21 @@ class _PlayerInfoTabState extends State<PlayerInfoTab> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: (_playerIndex == -1 ? null : movePlayerUpAction),
+                      onPressed: (!widget._controller.enableMovePlayerUp ? null : () {
+                        setState(() { widget._controller.movePlayerUp(); });
+                      }),
                       icon: const Icon(Icons.arrow_upward),
                       alignment: Alignment.center,
                     ),
                     IconButton(
-                      onPressed: (_playerIndex == -1 ? null : movePlayerDownAction),
+                      onPressed: (!widget._controller.enableMovePlayerDown ? null : () {
+                        setState(() { widget._controller.movePlayerDown(); });
+                      }),
                       icon: const Icon(Icons.arrow_downward),
                       alignment: Alignment.center
                     ),
                     IconButton(
-                      onPressed: (_playerIndex == -1 ? null : editPlayerAction),
+                      onPressed: (!widget._controller.enableEditPlayer ? null : editPlayerAction),
                       icon: const Icon(Icons.edit),
                       alignment: Alignment.center
                     )
@@ -104,7 +89,7 @@ class _PlayerInfoTabState extends State<PlayerInfoTab> {
             ]
           )
         ),
-        floatingActionButton: CustomButton("Take Turn", _playerIndex == -1 ? null : takeTurnAction)
+        floatingActionButton: CustomButton("Take Turn", getPlayerIndex() == -1 ? null : takeTurnAction)
     );
   }
 }
