@@ -6,14 +6,13 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/services.dart" show rootBundle;
 
 class StorageManager {
-
   static const String _jsonPath = 'resources/json/';
   static const String _cardsPath = 'resources/cards/';
 
   static final StorageManager _instance = StorageManager._internal();
 
-  Map<String, Image> cards = { };
-  Map<String, dynamic> versions = { };
+  Map<String, Image> cards = {};
+  Map<String, dynamic> versions = {};
 
   late Future<void> loading;
 
@@ -21,8 +20,7 @@ class StorageManager {
     return _instance;
   }
 
-  StorageManager._internal()
-  {
+  StorageManager._internal() {
     loading = Future(() async {
       final loadingCards = _loadCards();
       final loadingVersions = _loadVersions();
