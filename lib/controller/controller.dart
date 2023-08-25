@@ -25,8 +25,9 @@ class Controller {
   late final Analyser _analyser;
 
   final void Function() _updateGUI;
-  
-  Controller(final int numPlayers, final String version, this._updateGUI) {
+  final void Function(String, String) _errorPopup;
+
+  Controller(final int numPlayers, final String version, this._updateGUI, this._errorPopup) {
     for (int i = 0; i < numPlayers; ++i) {
       _players.add(Player());
     }
@@ -109,9 +110,11 @@ class Controller {
     }
     on Contradiction catch(contradiction) {
       _status = Status.contradiction;
+      _errorPopup("Contradiction Occurred", contradiction.toString());
     }
     on Exception catch(exception) {
       _status = Status.exception;
+      _errorPopup("Exception Occurred", exception.toString());
     }
 
     _updateGUI();
@@ -130,12 +133,22 @@ class Controller {
   }
 
   void updatePresets(final Player player, List<StagePreset> newPresets) {
-    if (newPresets == player.presets) {
-      return;
-    }
+    try {
+      if (newPresets == player.presets) {
+        return;
+      }
 
-    player.presets = newPresets;
-    _reAnalyseAll();
+      player.presets = newPresets;
+      _reAnalyseAll();
+    }
+    on Contradiction catch(contradiction) {
+      _status = Status.contradiction;
+      _errorPopup("Contradiction Occurred", contradiction.toString());
+    }
+    on Exception catch(exception) {
+      _status = Status.exception;
+      _errorPopup("Exception Occurred", exception.toString());
+    }
   }
 
   void movePlayerUp() {
@@ -148,14 +161,13 @@ class Controller {
       _playersLeft.insert(++selectedPlayerIndex, player);
   }
 
-  void moveToBack(final Player player) {
+  void _moveToBack(final Player player) {
     int index = _playersLeft.indexOf(player);
     if (index == -1) {
       throw Exception("Failed to find ${player.name} in players left");
     }
 
-    _playersLeft.removeAt(index);
-    _playersLeft.add(player);
+    _playersLeft.add(_playersLeft.removeAt(index));
   }
 
   void createTurn(

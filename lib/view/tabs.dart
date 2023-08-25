@@ -5,6 +5,8 @@ import "tabs/player_info_tab.dart";
 import "tabs/card_info_tab.dart";
 import "tabs/settings_tab.dart";
 
+import "popups/error_popup.dart";
+
 import "../controller/controller.dart";
 
 class Tabs extends StatefulWidget {
@@ -23,11 +25,17 @@ class _TabsState extends State<Tabs> {
   void updateAll() {
     setState(() {});
   }
+  void showErrorPopup(final String title, final String message) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => ErrorPopup(title, message)
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = Controller(widget._numPlayers, widget._version, updateAll);
+    _controller = Controller(widget._numPlayers, widget._version, updateAll, showErrorPopup);
   }
 
   @override
