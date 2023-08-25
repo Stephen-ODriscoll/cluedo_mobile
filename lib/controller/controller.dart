@@ -1,5 +1,3 @@
-import "dart:ffi";
-
 import "../utils/contradiction.dart";
 import "../utils/pair.dart";
 
@@ -42,9 +40,13 @@ class Controller {
     final versionSetup = storageManager.versions[version];
 
     for (final categoryEntry in versionSetup.entries) {
-      _categories.add(Category(categoryEntry.key,
-          [for (final cardDetails in categoryEntry.value) Pair(cardDetails[0], cardDetails[1])]
-          , _players));
+      _categories.add(
+        Category(
+          categoryEntry.key,
+          [for (final cardDetails in categoryEntry.value) Pair(cardDetails[0], cardDetails[1])],
+          _players
+        )
+      );
     }
 
     _analyser = Analyser(_players, _playersOut, _playersLeft, _categories);
@@ -54,13 +56,17 @@ class Controller {
   int selectedPlayerIndex = -1;
   Status _status = Status.okay;
 
-  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+  bool get enableMovePlayerUp =>
+    (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
 
-  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
+  bool get enableMovePlayerDown =>
+    (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
 
-  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
+  bool get enableEditPlayer =>
+    (0 <= selectedPlayerIndex);
 
-  bool get enableTakeTurn => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+  bool get enableTakeTurn =>
+    (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
 
   String get getStatus {
     switch (_status) {
@@ -78,7 +84,7 @@ class Controller {
   ];
 
   List<Player> get currentPlayers =>
-      _playersLeft.toList() + [ for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
+    _playersLeft.toList() + [ for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
 
   List<String> get playerNames => [for (final player in currentPlayers) player.name];
 
@@ -87,8 +93,8 @@ class Controller {
   int get numCategories => _categories.length;
 
   List<CategoryInfo> get categoriesInfo =>
-      [for (final category in _categories) CategoryInfo(
-          category.name, [for (final card in category.cards) card.display(stageNumber - 1)])];
+    [for (final category in _categories) CategoryInfo(
+      category.name, [for (final card in category.cards) card.display(stageNumber - 1)])];
 
   List<String> get turnsInfo => [for (final turn in _turns) turn.display()];
 
@@ -160,13 +166,13 @@ class Controller {
   }
 
   void movePlayerUp() {
-      final player = _playersLeft.removeAt(selectedPlayerIndex);
-      _playersLeft.insert(--selectedPlayerIndex, player);
+    final player = _playersLeft.removeAt(selectedPlayerIndex);
+    _playersLeft.insert(--selectedPlayerIndex, player);
   }
 
   void movePlayerDown() {
-      final player = _playersLeft.removeAt(selectedPlayerIndex);
-      _playersLeft.insert(++selectedPlayerIndex, player);
+    final player = _playersLeft.removeAt(selectedPlayerIndex);
+    _playersLeft.insert(++selectedPlayerIndex, player);
   }
 
   void _moveToBack(final Player player) {

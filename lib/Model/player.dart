@@ -27,9 +27,9 @@ class PlayerStage {
 
   PlayerStage();
   PlayerStage.clone(PlayerStage s) :
-        has = Set.from(s.has),
-        doesNotHave = Set.from(s.doesNotHave),
-        hasEither = [for (final cards in s.hasEither) List.from(cards)];
+    has = Set.from(s.has),
+    doesNotHave = Set.from(s.doesNotHave),
+    hasEither = [for (final cards in s.hasEither) List.from(cards)];
 }
 
 class Player {
@@ -42,8 +42,12 @@ class Player {
   Player();
 
   int get lastStageIndex => stages.length - 1;
-  bool isNotOut([final int? stageIndex]) => (stageIndex == null ? stages.length == presets.length : stageIndex < stages.length);
+
+  bool isNotOut([final int? stageIndex]) =>
+    (stageIndex == null ? stages.length == presets.length : stageIndex < stages.length);
+
   bool doesHave(final Card card, final int stageIndex) => stages[stageIndex].has.contains(card);
+
   bool allCardsKnown(final int stageIndex) => presets[stageIndex].allCardsKnown(stages[stageIndex].has.length);
 
   void reset(final Analyser analyser) {

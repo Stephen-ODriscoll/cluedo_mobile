@@ -70,9 +70,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
               onChanged: (int? newNum) {
-                setState(() {
-                  _numPlayers = newNum!;
-                });
+                setState(() { _numPlayers = newNum!; });
               }
             ),
             DropdownButton(
@@ -85,16 +83,14 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
               onChanged: (String? newVersion) {
-                setState(() {
-                  _version = newVersion!;
-                });
+                setState(() { _version = newVersion!; });
               }
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Tabs(_numPlayers, _version)));
+                  context,
+                  MaterialPageRoute(builder: (context) => Tabs(_numPlayers, _version)));
               },
               child: const CustomText('Continue')
             )

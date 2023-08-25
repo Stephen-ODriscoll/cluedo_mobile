@@ -13,8 +13,8 @@ class CustomListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(5)
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(5)
       ),
       child: ListView(
         children: [

@@ -28,8 +28,8 @@ class _TabsState extends State<Tabs> {
   }
   void showErrorPopup(final String title, final String message) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) => ErrorPopup(title, message)
+      context: context,
+      builder: (BuildContext context) => ErrorPopup(title, message)
     );
   }
 

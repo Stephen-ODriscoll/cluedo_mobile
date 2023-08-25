@@ -11,7 +11,7 @@ class CardStage {
   Player? owner;
   Set<Player> possibleOwners;
 
-  CardStage(List<Player> possibleOwners) : possibleOwners = possibleOwners.toSet();
+  CardStage(List<Player> possibleOwners) : possibleOwners = Set.from(possibleOwners);
   CardStage.clone(CardStage s) : owner = s.owner, possibleOwners = Set.from(s.possibleOwners);
 }
 

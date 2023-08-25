@@ -53,20 +53,20 @@ class Analyser {
   }
 
   void addDeduction(
-      final Player? player,
-      final Finding finding,
-      final List<Card> cards,
-      [final int stageIndex = -1]) {
+    final Player? player,
+    final Finding finding,
+    final List<Card> cards,
+    [final int stageIndex = -1]) {
     _deductions.add(_Deduction(player, finding, cards, stageIndex));
   }
 
   void _startAnalysis() {
     while (_deductions.isNotEmpty) {
-      final deduction   = _deductions.removeLast();
+      final deduction = _deductions.removeLast();
 
-      final thisPlayer    = deduction.player;
-      final theseCards    = deduction.cards;
-      final stageIndex    = deduction.stageIndex;
+      final thisPlayer = deduction.player;
+      final theseCards = deduction.cards;
+      final stageIndex = deduction.stageIndex;
 
       switch (deduction.finding) {
         case Finding.has:

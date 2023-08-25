@@ -63,15 +63,15 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
             children: [
               const CustomText("Action:"),
               DropdownButton(
-                  value: _actionIndex,
-                  items: const [
-                    DropdownMenuItem(value: 0, child: CustomText("Missed")),
-                    DropdownMenuItem(value: 1, child: CustomText("Asked")),
-                    DropdownMenuItem(value: 2, child: CustomText("Guessed"))
-                  ],
-                  onChanged: (int? newIndex) {
-                    setState(() { _actionIndex = newIndex!; });
-                  }
+                value: _actionIndex,
+                items: const [
+                  DropdownMenuItem(value: 0, child: CustomText("Missed")),
+                  DropdownMenuItem(value: 1, child: CustomText("Asked")),
+                  DropdownMenuItem(value: 2, child: CustomText("Guessed"))
+                ],
+                onChanged: (int? newIndex) {
+                  setState(() { _actionIndex = newIndex!; });
+                }
               )
             ]
           ),
@@ -81,14 +81,14 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
               children: [
                 const CustomText("Player:"),
                 DropdownButton(
-                    value: _witnessIndex,
-                    items: [
-                      for (final (i, playerName) in widget._controller.playerNames.indexed)
-                        DropdownMenuItem(value: i, child: CustomText(playerName))
-                    ],
-                    onChanged: (int? newIndex) {
-                      setState(() { _witnessIndex = newIndex!; });
-                    }
+                  value: _witnessIndex,
+                  items: [
+                    for (final (i, playerName) in widget._controller.playerNames.indexed)
+                      DropdownMenuItem(value: i, child: CustomText(playerName))
+                  ],
+                  onChanged: (int? newIndex) {
+                    setState(() { _witnessIndex = newIndex!; });
+                  }
                 )
               ]
             ),
@@ -152,15 +152,15 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                   children: [
                     const CustomText("Which:"),
                     DropdownButton(
-                        value: _shownIndex,
-                        items: [
-                          const DropdownMenuItem(value: -1, child: CustomText("Unknown")),
-                          for (final (i, categoryInfo) in widget._controller.categoriesInfo.indexed)
-                            DropdownMenuItem(value: i, child: CustomText(categoryInfo.cardsInfo[_cardIndexes[i]].first))
-                        ],
-                        onChanged: (int? newIndex) {
-                          setState(() { _shownIndex = newIndex!; });
-                        }
+                      value: _shownIndex,
+                      items: [
+                        const DropdownMenuItem(value: -1, child: CustomText("Unknown")),
+                        for (final (i, categoryInfo) in widget._controller.categoriesInfo.indexed)
+                          DropdownMenuItem(value: i, child: CustomText(categoryInfo.cardsInfo[_cardIndexes[i]].first))
+                      ],
+                      onChanged: (int? newIndex) {
+                        setState(() { _shownIndex = newIndex!; });
+                      }
                     )
                   ]
                 )
@@ -174,12 +174,12 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
               CustomButton("Submit", (() {
                 Navigator.pop(context);
                 widget._controller.createTurn(
-                    _detectiveIndex,
-                    _actionIndex,
-                    _witnessIndex,
-                    _cardIndexes,
-                    _success,
-                    _shownIndex);
+                  _detectiveIndex,
+                  _actionIndex,
+                  _witnessIndex,
+                  _cardIndexes,
+                  _success,
+                  _shownIndex);
               }))
             ]
           )
