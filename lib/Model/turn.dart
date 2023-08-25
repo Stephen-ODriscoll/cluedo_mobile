@@ -1,15 +1,10 @@
 import "player.dart";
 import "card.dart";
-
-enum Action {
-  missed,
-  asked,
-  guessed
-}
+import "enum.dart";
 
 abstract class Turn {
-  final Action action;
   final Player detective;
+  final Action action;
 
   Turn(this.detective, this.action);
 
@@ -46,7 +41,7 @@ class Asked extends Turn {
 class Guessed extends Turn {
   final bool correct;
   final List<Card> cards;
-  final List<int> redistribution;
+  final List<int?> redistribution;
 
   Guessed(final Player detective, this.cards, this.correct, this.redistribution) :
       super(detective, Action.guessed);

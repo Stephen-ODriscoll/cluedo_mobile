@@ -1,7 +1,7 @@
 
 class Pair<T1, T2> {
-  T1 first;
-  T2 second;
+  final T1 first;
+  final T2 second;
 
-  Pair(this.first, this.second);
+  const Pair(this.first, this.second);
 }

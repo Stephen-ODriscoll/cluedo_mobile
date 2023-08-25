@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "../components/custom_text.dart";
 
 import "../../controller/controller.dart";
-import "../../model/global.dart";
 
 class CardInfoTab extends StatefulWidget {
   final Controller _controller;
@@ -25,17 +24,17 @@ class _CardInfoTabState extends State<CardInfoTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final category in gCategories)
+              for (final categoryInfo in widget._controller.categoriesInfo)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const CustomText(""),
-                    CustomBoldText(category.name),
+                    CustomBoldText(categoryInfo.name),
                     Table(
                       border: TableBorder.all(),
                       children: [
-                        for (final cardPair in category.display(0))
-                          TableRow(children: [ CustomText(cardPair.first), CustomText(cardPair.second) ])
+                        for (final cardInfo in categoryInfo.cardsInfo)
+                          TableRow(children: [ CustomText(cardInfo.first), CustomText(cardInfo.second) ])
                       ]
                     )
                   ]

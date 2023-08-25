@@ -5,9 +5,9 @@ import "custom_text.dart";
 class CustomListView extends StatelessWidget {
   final List<String> _items;
   final int? _selectedIndex;
-  final void Function(int) _indexChangeAction;
+  final void Function(int) _indexChangedAction;
 
-  const CustomListView(this._items, this._selectedIndex, this._indexChangeAction, {super.key});
+  const CustomListView(this._items, this._selectedIndex, this._indexChangedAction, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,7 @@ class CustomListView extends StatelessWidget {
             selected: (index == _selectedIndex),
             selectedColor: Colors.black,
             selectedTileColor: Colors.blueAccent,
-            onTap: () {
-              _indexChangeAction(index);
-            }
+            onTap: () { _indexChangedAction(index); }
           )
         ]
       )
