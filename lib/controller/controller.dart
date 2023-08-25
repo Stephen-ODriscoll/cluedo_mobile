@@ -1,3 +1,5 @@
+import "dart:ffi";
+
 import "../utils/contradiction.dart";
 import "../utils/pair.dart";
 
@@ -52,6 +54,14 @@ class Controller {
   int selectedPlayerIndex = -1;
   Status _status = Status.okay;
 
+  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+
+  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
+
+  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
+
+  bool get enableTakeTurn => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+
   String get getStatus {
     switch (_status) {
       case Status.okay:           return "Okay";
@@ -67,22 +77,20 @@ class Controller {
     Pair(Action.guessed.index, "Guessed")
   ];
 
-  List<String> get playerNames =>
-      [for (final player in _playersLeft) player.name] +
-          [ for (int i = stageNumber - 1; i < _playersOut.length; ++i) _playersOut[i].name];
+  List<Player> get currentPlayers =>
+      _playersLeft.toList() + [ for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
+
+  List<String> get playerNames => [for (final player in currentPlayers) player.name];
+
+  String get playersInfo => [for (final player in currentPlayers) player.display(stageNumber - 1)].join("\n");
 
   int get numCategories => _categories.length;
 
   List<CategoryInfo> get categoriesInfo =>
-      List.from(_categories.map(
-              (category) => CategoryInfo(category.name, List.from(category.cards.map(
-                      (card) => card.display(stageNumber - 1))))));
+      [for (final category in _categories) CategoryInfo(
+          category.name, [for (final card in category.cards) card.display(stageNumber - 1)])];
 
-  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
-
-  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
-
-  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
+  List<String> get turnsInfo => [for (final turn in _turns) turn.display()];
 
   void _reAnalyseAll() {
     _analyser.reset();

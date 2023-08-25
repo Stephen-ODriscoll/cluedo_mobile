@@ -10,14 +10,14 @@ abstract class Turn {
 
   bool redistribute() => false;
   String witnessName() => "";
-  @override String toString();
+  String display();
 }
 
 class Missed extends Turn {
   Missed(final Player detective) :
         super(detective, Action.missed);
 
-  @override String toString() => "${detective.name} missed a turn";
+  @override String display() => "${detective.name} missed a turn";
 }
 
 
@@ -34,7 +34,9 @@ class Asked extends Turn {
   String witnessName() => witness.name;
 
   @override
-  String toString() => "${witness.name} ${shown ? "has either" : "doesn't have"} ${cards.map((a) => a.nickname).join(", ")}";
+  String display() =>
+      "${witness.name} ${shown ? "has either" : "doesn't have"}"
+          " ${cards.map((card) => card.name).join(", ")}";
 }
 
 
@@ -50,5 +52,7 @@ class Guessed extends Turn {
   bool redistribute() => !correct;
 
   @override
-  String toString() => "${detective.name} guessed ${(correct ? "correctly" : "incorrectly")} ${cards.map((a) => a.nickname).join(", ")}";
+  String display() =>
+      "${detective.name} guessed ${(correct ? "correctly" : "incorrectly")}"
+          " ${cards.map((card) => card.name).join(", ")}";
 }
