@@ -30,6 +30,8 @@ class Analyser {
     for (final player in _players) {
       _playersLeft.add(player);
     }
+
+    resetProgressReport(START_MESSAGE);
   }
 
   void reset() {

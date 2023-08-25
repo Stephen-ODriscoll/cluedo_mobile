@@ -1,9 +1,9 @@
 
 class Contradiction implements Exception {
-  final String message;
+  final String _message;
 
-  const Contradiction(this.message);
+  const Contradiction(this._message);
 
   @override
-  String toString() => "Contradiction: $message";
+  String toString() => _message;
 }

@@ -18,7 +18,6 @@ class PlayerInfoTab extends StatefulWidget {
 }
 
 class _PlayerInfoTabState extends State<PlayerInfoTab> {
-
   int getPlayerIndex() {
     return widget._controller.selectedPlayerIndex;
   }
