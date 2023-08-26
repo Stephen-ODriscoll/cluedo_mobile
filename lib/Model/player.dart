@@ -36,8 +36,8 @@ class Player {
   static int _playerCount = 0;
 
   String name = "Player ${(++_playerCount).toString()}";
-  List<StagePreset> presets = [ StagePreset() ];
-  List<PlayerStage> stages = [ PlayerStage() ];
+  List<StagePreset> presets = [StagePreset()];
+  List<PlayerStage> stages = [PlayerStage()];
 
   Player();
 
@@ -51,7 +51,7 @@ class Player {
   bool allCardsKnown(final int stageIndex) => presets[stageIndex].allCardsKnown(stages[stageIndex].has.length);
 
   void reset(final Analyser analyser) {
-    stages = [ PlayerStage() ];
+    stages = [PlayerStage()];
 
     for (Card card in presets.first.ownedCards) {
       analyser.addDeduction(this, Finding.has, [card], 0);
@@ -105,7 +105,7 @@ class Player {
   */
   void processDoesNotHave(final Analyser analyser, final Card card, final int stageIndex) {
     bool loop = true;
-    for (int i = stageIndex; 0 < i && loop; --i) {
+    for (int i = stageIndex; 0 <= i && loop; --i) {
       if (card.isLocationKnown(i) || allCardsKnown(i)) {
         loop = stages[i].doesNotHave.remove(card);
       }
@@ -151,20 +151,21 @@ class Player {
       stages.last.doesNotHave = stages.last.doesNotHave.intersection(guesser.stages.last.doesNotHave);
     }
 
-    final int stageIndex = stages.length - 1;
+    final stageIndex = stages.length - 1;
+
     analyser.addDeduction(this, Finding.has, presets[stageIndex].ownedCards.toList(), stageIndex);
   }
 
   String display(final int stageIndex) {
-    if (stages.length <= stageIndex) {
+    if (!isNotOut(stageIndex)) {
       return "";
     }
 
-    final PlayerStage stage = stages[stageIndex];
+    final stage = stages[stageIndex];
 
     return "$name"
-      "\n\thas: ${stage.has.map((card) => card.nickname).join(", ")} ${allCardsKnown(stageIndex) ? " (All Cards)" : ""}"
-      "\n\thas either: ${stage.hasEither.map((cards) => cards.map((card) => card.nickname).join("/")).join(", ")}"
-      "\n\tdoesn't have: ${stage.doesNotHave.map((card) => card.nickname).join(", ")}\n";
+      "\n\tHas: ${stage.has.map((card) => card.nickname).join(", ")} ${allCardsKnown(stageIndex) ? " (All Cards)" : ""}"
+      "\n\tHas Either: ${stage.hasEither.map((cards) => cards.map((card) => card.nickname).join("/")).join(", ")}"
+      "\n\tDoesn't Have: ${stage.doesNotHave.map((card) => card.nickname).join(", ")}\n";
   }
 }

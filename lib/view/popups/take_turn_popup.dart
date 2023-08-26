@@ -37,6 +37,7 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const CustomText("Take Turn"),
+      scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -139,7 +140,7 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
                         value: false,
                         groupValue: _success,
                         onChanged: (Object? _) {
-                        setState(() { _success = false; });
+                          setState(() { _success = false; });
                         }
                       )
                     ]

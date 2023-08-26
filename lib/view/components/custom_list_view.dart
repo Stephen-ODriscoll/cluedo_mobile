@@ -18,13 +18,14 @@ class CustomListView extends StatelessWidget {
       ),
       child: ListView(
         children: [
-          for (final (index, item) in _items.indexed) ListTile(
-            title: CustomText(item),
-            selected: (index == _selectedIndex),
-            selectedColor: Colors.black,
-            selectedTileColor: Colors.blueAccent,
-            onTap: () { _indexChangedAction(index); }
-          )
+          for (final (index, item) in _items.indexed)
+            ListTile(
+              title: CustomText(item),
+              selected: (index == _selectedIndex),
+              selectedColor: Colors.black,
+              selectedTileColor: Colors.blueAccent,
+              onTap: () { _indexChangedAction(index); }
+            )
         ]
       )
     );
