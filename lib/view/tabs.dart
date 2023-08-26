@@ -41,30 +41,28 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultTabController(
-        length: 5,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.grid_on)),
-                Tab(icon: Icon(Icons.format_align_left)),
-                Tab(icon: Icon(Icons.format_list_numbered)),
-                Tab(icon: Icon(Icons.settings))
-              ]
-            )
-          ),
-          body: TabBarView(
-            children: [
-              MainInfoTab(_controller),
-              CardInfoTab(_controller),
-              PlayerInfoTab(_controller),
-              TurnInfoTab(_controller),
-              SettingsTab(_controller)
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.grid_on)),
+              Tab(icon: Icon(Icons.format_align_left)),
+              Tab(icon: Icon(Icons.format_list_numbered)),
+              Tab(icon: Icon(Icons.settings))
             ]
           )
+        ),
+        body: TabBarView(
+          children: [
+            MainInfoTab(_controller),
+            CardInfoTab(_controller),
+            PlayerInfoTab(_controller),
+            TurnInfoTab(_controller),
+            SettingsTab(_controller)
+          ]
         )
       )
     );

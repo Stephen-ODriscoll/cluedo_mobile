@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               value: _version,
               icon: const Icon(Icons.keyboard_arrow_down),
               items: [
-                for (String key in StorageManager().versions.keys) DropdownMenuItem(
+                for (final key in StorageManager().versions.keys) DropdownMenuItem(
                   value: key,
                   child: CustomText(key)
                 )

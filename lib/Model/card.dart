@@ -28,7 +28,7 @@ class Card {
 
   bool get isInnocent => conviction == Conviction.innocent;
 
-  bool isOwnerKnown(final int stageIndex) => stages[stageIndex].owner == null;
+  bool isOwnerKnown(final int stageIndex) => stages[stageIndex].owner != null;
 
   bool isOwnedBy(final Player player, final int stageIndex) => stages[stageIndex].owner == player;
 
@@ -88,7 +88,7 @@ class Card {
   /*
   * If a player owns this card, then the only players who can have owned it earlier are this player and any players who are now out.
   */
-  void processOwnedBy(Analyser analyser, Player player, int stageIndex) {
+  void processOwnedBy(final Analyser analyser, final Player player, final int stageIndex) {
     if (isOwnedBy(player, stageIndex)) {
       return;
     }
@@ -116,7 +116,7 @@ class Card {
       throw Contradiction("Previous info says ${player.name} has $name");
     }
 
-    for (int i = stageIndex; i != 0; --i) {
+    for (int i = stageIndex; i < 0; --i) {
       if (!stages[i].possibleOwners.remove(player)) {
         break;
       }
@@ -141,7 +141,7 @@ class Card {
   * At every stage check if the card can only be guilty or only be owned by one person.
   */
   void recheckLocation(final Analyser analyser) {
-    for (int i = 0; i != stages.length; ++i) {
+    for (int i = 0; i < stages.length; ++i) {
       if (isLocationKnown(i)) {
         continue;
       }
@@ -177,7 +177,7 @@ class Category {
   }
 
   void reset(final List<Player> players) {
-    for (Card card in cards) {
+    for (final card in cards) {
       possibleGuilty.add(card);
       card.reset(players);
     }
@@ -194,6 +194,6 @@ class Category {
   }
 
   List<Pair<String, String>> display(final int stageIndex) {
-    return [ for (Card card in cards) card.display(stageIndex)];
+    return [for (final card in cards) card.display(stageIndex)];
   }
 }

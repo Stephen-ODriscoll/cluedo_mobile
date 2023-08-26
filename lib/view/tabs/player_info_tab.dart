@@ -11,6 +11,12 @@ class PlayerInfoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomText(_controller.playersInfo);
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: CustomText(_controller.playersInfo)
+      )
+    );
   }
 }

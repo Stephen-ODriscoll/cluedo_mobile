@@ -44,8 +44,8 @@ class _MainInfoTabState extends State<MainInfoTab> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 300,
-              width: 200,
+              height: 338,
+              width: 220,
               child: CustomListView(
                 widget._controller.playerNames,
                 getPlayerIndex(),
@@ -57,8 +57,8 @@ class _MainInfoTabState extends State<MainInfoTab> {
               )
             ),
             SizedBox(
-              height: 300,
-              width: 100,
+              height: 338,
+              width: 80,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

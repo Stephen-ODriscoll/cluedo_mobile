@@ -32,13 +32,12 @@ class Controller {
       _players.add(Player());
     }
 
-    StorageManager storageManager = StorageManager();
+    final storageManager = StorageManager();
     if (!storageManager.versions.containsKey(version)) {
       throw Exception("Couldn't find config for version $version");
     }
 
     final versionSetup = storageManager.versions[version];
-
     for (final categoryEntry in versionSetup.entries) {
       _categories.add(
         Category(
@@ -56,17 +55,13 @@ class Controller {
   int selectedPlayerIndex = -1;
   Status _status = Status.okay;
 
-  bool get enableMovePlayerUp =>
-    (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
 
-  bool get enableMovePlayerDown =>
-    (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
+  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
 
-  bool get enableEditPlayer =>
-    (0 <= selectedPlayerIndex);
+  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
 
-  bool get enableTakeTurn =>
-    (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+  bool get enableTakeTurn => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
 
   String get getStatus {
     switch (_status) {
@@ -84,7 +79,7 @@ class Controller {
   ];
 
   List<Player> get currentPlayers =>
-    _playersLeft.toList() + [ for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
+    _playersLeft.toList() + [for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
 
   List<String> get playerNames => [for (final player in currentPlayers) player.name];
 
@@ -95,6 +90,8 @@ class Controller {
   List<CategoryInfo> get categoriesInfo =>
     [for (final category in _categories) CategoryInfo(
       category.name, [for (final card in category.cards) card.display(stageNumber - 1)])];
+
+  int get numTurns => _turns.length;
 
   List<String> get turnsInfo => [for (final turn in _turns) turn.display()];
 
@@ -114,7 +111,6 @@ class Controller {
         }
 
         _turns[index] = newTurn;
-
         _reAnalyseAll();
       }
       else {
@@ -197,12 +193,12 @@ class Controller {
         break;
 
       case Action.asked:
-        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
+        List<Card> cards = [for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
         processTurn(Asked(_players[detectiveIndex], _players[witnessIndex], cards, success, shownIndex));
         break;
 
       case Action.guessed:
-        List<Card> cards = [ for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
+        List<Card> cards = [for (final (i, cardIndex) in cardIndexes.indexed) _categories[i].cards[cardIndex]];
         processTurn(Guessed(_players[detectiveIndex], cards, success, []));
         break;
     }
