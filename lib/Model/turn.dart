@@ -34,7 +34,7 @@ class Asked extends Turn {
 
   @override
   String display() =>
-    "${witness.name} ${shown ? "has either" : "doesn't have"}"
+    "${detective.name} asked ${witness.name} and was ${shown ? "" : "not"} shown"
       " ${cards.map((card) => card.name).join(", ")}";
 }
 

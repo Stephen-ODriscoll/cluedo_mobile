@@ -36,7 +36,7 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const CustomText("Take Turn"),
+      title: const CustomBoldText("Take Turn"),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -44,16 +44,18 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const CustomText("Player:"),
+              const CustomText("Detective:"),
               DropdownButton(
                 value: _detectiveIndex,
                 items: [
-                  for (final (i, playerName) in widget._controller.playerNames.indexed)
+                  for (final (i, playerName) in widget._controller.currentPlayerNames.indexed)
                     DropdownMenuItem(value: i, child: CustomText(playerName))
                 ],
                 onChanged: (int? newIndex) {
                   setState(() {
+                    final previous = _detectiveIndex;
                     _detectiveIndex = newIndex!;
+                    _witnessIndex = (_witnessIndex == _detectiveIndex) ? previous : _witnessIndex;
                   });
                 }
               )
@@ -80,12 +82,13 @@ class _TakeTurnPopupState extends State<TakeTurnPopup> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const CustomText("Player:"),
+                const CustomText("Witness:"),
                 DropdownButton(
                   value: _witnessIndex,
                   items: [
-                    for (final (i, playerName) in widget._controller.playerNames.indexed)
-                      DropdownMenuItem(value: i, child: CustomText(playerName))
+                    for (final (i, playerName) in widget._controller.currentPlayerNames.indexed)
+                      if (i != _detectiveIndex)
+                        DropdownMenuItem(value: i, child: CustomText(playerName))
                   ],
                   onChanged: (int? newIndex) {
                     setState(() { _witnessIndex = newIndex!; });

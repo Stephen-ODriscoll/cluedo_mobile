@@ -55,14 +55,6 @@ class Controller {
   int selectedPlayerIndex = -1;
   Status _status = Status.okay;
 
-  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
-
-  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
-
-  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
-
-  bool get enableTakeTurn => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
-
   String get getStatus {
     switch (_status) {
       case Status.okay:           return "Okay";
@@ -78,12 +70,22 @@ class Controller {
     Pair(Action.guessed.index, "Guessed")
   ];
 
-  List<Player> get currentPlayers =>
+  bool get enableMovePlayerUp => (0 < selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+
+  bool get enableMovePlayerDown => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length - 1);
+
+  bool get enableTakeTurn => (0 <= selectedPlayerIndex && selectedPlayerIndex < _playersLeft.length);
+
+  bool get enableEditPlayer => (0 <= selectedPlayerIndex);
+
+  List<Player> get _currentPlayers =>
     _playersLeft.toList() + [for (int i = _playersOut.length - 1; stageNumber < i; --i) _playersOut[i]];
 
-  List<String> get playerNames => [for (final player in currentPlayers) player.name];
+  String get selectedPlayerName => _currentPlayers[selectedPlayerIndex].name;
 
-  String get playersInfo => [for (final player in currentPlayers) player.display(stageNumber - 1)].join("\n");
+  List<String> get currentPlayerNames => [for (final player in _currentPlayers) player.name];
+
+  String get currentPlayersInfo => [for (final player in _currentPlayers) player.display(stageNumber - 1)].join("\n");
 
   int get numCategories => _categories.length;
 
@@ -97,7 +99,7 @@ class Controller {
 
   void _reAnalyseAll() {
     _analyser.reset();
-    for (Turn turn in _turns) {
+    for (final turn in _turns) {
       _analyser.analyseTurn(turn);
     }
   }
@@ -127,19 +129,24 @@ class Controller {
       _errorPopup("Exception Occurred", exception.toString());
     }
 
+    _moveToBack();
     _updateGUI();
   }
 
-  void rename(final Player player, final String newName) {
+  void rename(final String newName) {
+    final player = _currentPlayers[selectedPlayerIndex];
+
     if (player.name == newName) {
       return;
     }
 
-    if (_players.indexWhere((p) => p.name == newName) != -1) {
-      throw Exception("Player with that name already exists");
+    if (_players.indexWhere((player) => player.name == newName) != -1) {
+      _errorPopup("Error", "Player with the name $newName already exists");
     }
-
-    player.name = newName;
+    else {
+      player.name = newName;
+      _updateGUI();
+    }
   }
 
   void updatePresets(final Player player, List<StagePreset> newPresets) {
@@ -171,22 +178,18 @@ class Controller {
     _playersLeft.insert(++selectedPlayerIndex, player);
   }
 
-  void _moveToBack(final Player player) {
-    int index = _playersLeft.indexOf(player);
-    if (index == -1) {
-      throw Exception("Failed to find ${player.name} in players left");
-    }
-
-    _playersLeft.add(_playersLeft.removeAt(index));
+  void _moveToBack() {
+    _playersLeft.add(_playersLeft.removeAt(selectedPlayerIndex));
+    selectedPlayerIndex = -1;
   }
 
   void createTurn(
-    int detectiveIndex,
-    int actionIndex,
-    int witnessIndex,
-    List<int> cardIndexes,
-    bool success,
-    int shownIndex) {
+    final int detectiveIndex,
+    final int actionIndex,
+    final int witnessIndex,
+    final List<int> cardIndexes,
+    final bool success,
+    final int shownIndex) {
     switch (Action.values[actionIndex]) {
       case Action.missed:
         processTurn(Missed(_players[detectiveIndex]));
