@@ -100,7 +100,6 @@ class Player {
   }
 
   /*
-  * Once a player gets a card they hold it until they're out.
   * If a Player doesn't have a card, they can't have had it earlier.
   */
   void processDoesNotHave(final Analyser analyser, final Card card, final int stageIndex) {
@@ -142,7 +141,7 @@ class Player {
   }
 
   /*
-  * If a player receives cards from the guesser they still can't have any cards that both them and the guesser couldn't have had earlier.
+  * If a player receives cards from the guesser, they still can't have any cards that they both didn't have.
   */
   void processGuessedWrong(final Analyser analyser, final Player guesser) {
     stages.add(PlayerStage.clone(stages.last));

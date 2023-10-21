@@ -22,7 +22,6 @@ class CardInfoTab extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomText(""),
                   CustomBoldText(categoryInfo.name),
                   Table(
                     border: TableBorder.all(),
@@ -30,7 +29,8 @@ class CardInfoTab extends StatelessWidget {
                       for (final cardInfo in categoryInfo.cardsInfo)
                         TableRow(children: [CustomText(cardInfo.first), CustomText(cardInfo.second)])
                     ]
-                  )
+                  ),
+                  const CustomText("")
                 ]
               )
           ]

@@ -11,7 +11,7 @@ class ErrorPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: CustomText(_title),
+      title: CustomBoldText(_title),
       content: CustomText(_message));
   }
 }

@@ -47,11 +47,16 @@ class _MainInfoTabState extends State<MainInfoTab> {
               height: 338,
               width: 220,
               child: CustomListView(
-                widget._controller.playerNames,
+                widget._controller.currentPlayerNames,
                 getPlayerIndex(),
                 ((int newIndex) {
                   setState(() {
-                    widget._controller.selectedPlayerIndex = newIndex;
+                    if (widget._controller.selectedPlayerIndex == newIndex) {
+                      widget._controller.selectedPlayerIndex = -1;  // deselect
+                    }
+                    else {
+                      widget._controller.selectedPlayerIndex = newIndex;
+                    }
                   });
                 })
               )

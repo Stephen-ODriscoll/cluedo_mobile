@@ -18,15 +18,12 @@ class _TurnInfoTabState extends State<TurnInfoTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: CustomListView(
-        widget._controller.turnsInfo,
-        _turnIndex,
-        ((int newIndex) {
-          setState(() { _turnIndex = newIndex; });
-        })
-      )
+    return CustomListView(
+      widget._controller.turnsInfo,
+      _turnIndex,
+      ((int newIndex) {
+        setState(() { _turnIndex = (_turnIndex == newIndex ? null : newIndex); });
+      })
     );
   }
 }

@@ -15,7 +15,7 @@ class PlayerInfoTab extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: CustomText(_controller.playersInfo)
+        child: CustomText(_controller.currentPlayersInfo)
       )
     );
   }
